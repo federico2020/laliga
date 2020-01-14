@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <body>
+
+    <nav class="navbar navbar-dark fixed-top bg-dark p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">LaLiga</a>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row" style="padding-top: 40px">
+            <nav class="col-md-2 d-md-block bg-light sidebar pt-4">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Clubs</a>
+                    </li>
+                    <small>
+                        <ul class="list-unstyled pl-4">
+                            <li>
+                                <div class="form-check">
+                                    <input onclick="init.filtrar()" value="0" class="form-check-input" type="radio" name="select_club" id="club_todos" checked>
+                                    <label class="form-check-label" for="club_todos">
+                                        Todos
+                                    </label>
+                                </div>
+                            </li>
+                            <div id="selectClub"></div>
+                        </ul>
+                    </small>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Perfil</a>
+                    </li>
+                    <small>
+                        <ul class="list-unstyled pl-4">
+                            <li>
+                                <div class="form-check">
+                                    <input onclick="init.filtrar()" type="checkbox" class="form-check-input" id="perfil_todos" checked>
+                                    <label class="form-check-label" for="perfil_todos">Todos</label>
+                                </div>
+                            </li>
+                            <div id="selectPerfil"></div>
+                        </ul>
+                    </small>
+                </ul>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 pt-4">
+
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button data-toggle="modal" data-target="#modalAgregarClub" type="button" class="btn btn-sm btn-outline-secondary">+ Club</button>
+                        <button data-toggle="modal" data-target="#modalAgregarJugador"type="button" class="btn btn-sm btn-outline-secondary ml-1" id="buttonAgregarJugador">+ Jugador</button>
+                        <button data-toggle="modal" data-target="#modalAgregarPerfil"type="button" class="btn btn-sm btn-outline-secondary ml-1">+ Perfil</button>
+                    </div>
+                </div>
+
+                <h2>Jugadores</h2>
+                <div class="table-responsive" id="jugadoresTabla">
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <!-- Modal Club -->
+    <div class="modal fade" id="modalAgregarClub" tabindex="-1" role="dialog" aria-labelledby="clubModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clubModalLabel">Agregar Club</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="clubModalNombre" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="col-sm-10">
+                                <input name="nombre" type="text" class="form-control" id="clubModalNombre" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="clubModalEscudo" class="col-sm-2 col-form-label">Escudo</label>
+                            <div class="col-sm-10">
+                                <input name="escudo" type="text" class="form-control" id="clubModalEscudo" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="clubModalLimiteSalarial" class="col-sm-2 col-form-label">Límite salarial</label>
+                            <div class="col-sm-10">
+                                <input name="limiteSalarial" type="number" min="1" step="any" class="form-control" id="clubModalLimiteSalarial" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display: none" id="clubModalMsg" class=""></div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="clubModalSubmit" type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Jugador -->
+    <div class="modal fade" id="modalAgregarJugador" tabindex="-1" role="dialog" aria-labelledby="jugadorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="jugadorModalLabel">Agregar Jugador</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="overflow:auto;max-height: 300px;">
+                        <div class="form-group row">
+                            <label for="jugadorModalNombre" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="col-sm-10">
+                                <input name="nombre" type="text" class="form-control" id="jugadorModalNombre" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModalClub" class="col-sm-2 col-form-label">Club</label>
+                            <div class="col-sm-10">
+                                <select name="club" type="text" class="form-control" id="jugadorModalClub" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModalPerfil" class="col-sm-2 col-form-label">Perfil</label>
+                            <div class="col-sm-10">
+                                <select name="perfil" type="text" class="form-control" id="jugadorModalPerfil" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModalPosicion" class="col-sm-2 col-form-label">Posición</label>
+                            <div class="col-sm-10">
+                                <select name="posicion" type="text" class="form-control" id="jugadorModalPosicion" required>
+                                    <option value="Ninguna">Ninguna</option>
+                                    <option value="Portero">Portero</option>
+                                    <option value="Defensa">Defensa</option>
+                                    <option value="Centrocampista">Centrocampista</option>
+                                    <option value="Delantero">Delantero</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fechaNacimientoModalClub" class="col-sm-2 col-form-label">Fecha nacimiento</label>
+                            <div class="col-sm-10">
+                                <input type="date" name="fechaNacimiento" class="form-control"  id="jugadorModalFechaNacimiento" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="clubModalLimiteSalarial" class="col-sm-2 col-form-label">Salario</label>
+                            <div class="col-sm-10">
+                                <input name="salario" type="number" min="1" step="any" class="form-control" id="jugadorModalSalario" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModalEmail" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input name="email" type="email" class="form-control" id="jugadorModalEmail" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display: none" id="jugadorModalMsg" class=""></div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="jugadorModalSubmit" type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Perfil -->
+    <div class="modal fade" id="modalAgregarPerfil" tabindex="-1" role="dialog" aria-labelledby="perfilModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clubModalLabel">Agregar Perfil</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="perfilModalNombre" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="col-sm-10">
+                                <input name="nombre" type="text" class="form-control" id="perfilModalNombre" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display: none" id="perfilModalMsg" class=""></div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="perfilModalSubmit" type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Jugador modificar -->
+    <div class="modal fade" id="modalModificarJugador" tabindex="-1" role="dialog" aria-labelledby="jugadorModificarModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="jugadorModificarModalLabel">Modificar Jugador</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="overflow:auto;max-height: 300px;">
+                        <input type="hidden" id="jugadorModificarModalId">
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalNombre" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="col-sm-10">
+                                <input name="nombre" type="text" class="form-control" id="jugadorModificarModalNombre" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalClub" class="col-sm-2 col-form-label">Club</label>
+                            <div class="col-sm-10">
+                                <select name="club" type="text" class="form-control" id="jugadorModificarModalClub" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalPerfil" class="col-sm-2 col-form-label">Perfil</label>
+                            <div class="col-sm-10">
+                                <select name="perfil" type="text" class="form-control" id="jugadorModificarModalPerfil" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalPosicion" class="col-sm-2 col-form-label">Posición</label>
+                            <div class="col-sm-10">
+                                <select name="posicion" type="text" class="form-control" id="jugadorModificarModalPosicion" required>
+                                    <option value="Ninguna">Ninguna</option>
+                                    <option value="Portero">Portero</option>
+                                    <option value="Defensa">Defensa</option>
+                                    <option value="Centrocampista">Centrocampista</option>
+                                    <option value="Delantero">Delantero</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalFechaNacimiento" class="col-sm-2 col-form-label">Fecha nacimiento</label>
+                            <div class="col-sm-10">
+                                <input type="date" name="fechaNacimiento" class="form-control"  id="jugadorModificarModalFechaNacimiento" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalSalario" class="col-sm-2 col-form-label">Salario</label>
+                            <div class="col-sm-10">
+                                <input name="salario" type="number" min="1" step="any" class="form-control" id="jugadorModificarModalSalario" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="jugadorModificarModalEmail" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input name="email" type="email" class="form-control" id="jugadorModificarModalEmail" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div style="display: none" id="jugadorModificarModalMsg" class=""></div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="jugadorModificarModalSubmit" type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    {% endblock %}
+
+{% block javascripts %}
+
+    <script src="/js/app.js"></script>
+{% endblock %}
