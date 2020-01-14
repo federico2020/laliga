@@ -148,8 +148,14 @@ var init = {
                 return;
             }
 
-            if(data.clubs.length>0){
+            if(data.clubs.length>0 && data.perfiles.length>0) {
                 $('#buttonAgregarJugador').show();
+            }
+            else{
+                $('#buttonAgregarJugador').hide();
+            }
+
+            if(data.clubs.length>0){
                 $('#jugadorModalClub').html('');
                 $('#jugadorModificarModalClub').html('');
                 $.each(data.clubs, function (i,value) {
@@ -167,9 +173,6 @@ var init = {
                     `;
                     $('#selectClub').append(clubLi);
                 })
-            }
-            else{
-                $('#buttonAgregarJugador').hide();
             }
 
             if(data.perfiles.length>0){

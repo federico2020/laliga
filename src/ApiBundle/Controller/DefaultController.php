@@ -343,7 +343,7 @@ class DefaultController extends AbstractFOSRestController
             $output['error']=true;
             $output['msg']='El club no existe';
         }
-        elseif(empty($salario) || !is_numeric($salario)){
+        elseif(!in_array(strtoupper($perfil->getNombre()),['CANTERANO','CANTERANOS','JUVENIL','JUVENILES']) && (empty($salario) || !is_numeric($salario))){
             $output['error']=true;
             $output['msg']='El salario es obligatorio';
         }
